@@ -16,7 +16,7 @@ class optimal_wealth_process():
         self.r = 0.01
         self.u = 0.2
         self.l = -0.2
-        self.T = 60000
+        self.T = 250
         self.R_bar = self.p * self.u + (1 - self.p) * self.l # = 0.02
         self.X_0 = X_0
         self.X_t = self.X_0
@@ -41,12 +41,50 @@ class optimal_wealth_process():
             X_t_process.append(self.X_t)
             X_t_mean_process.append(self.X_t_mean)
             
-        #plt.plot(time, X_t_process, label="wealth")
-        #plt.plot(time, X_t_mean_process, label="mean of wealth")
+            #print(X_t_mean_process)
+            
+        return time, X_t_process, X_t_mean_process        
+        
+    def sample_plot(self):
+        
+        time, X_t_process, X_t_mean_process = self.optimal_wealth()
+        
+        plt.plot(time, X_t_process, label="wealth")
+        plt.plot(time, X_t_mean_process, label="mean of wealth")
         plt.legend(loc='upper left')
         plt.xlabel("time")
         plt.ylabel("wealth")
         plt.show()
+    
+    
+    def sample_sd_plot(self):
+        
+        time, X_t_process, X_t_mean_process = self.optimal_wealth()
+        X_t_mean_process = np.array(X_t_mean_process)
+
+        sample_sd = self.calc_sd()
+             
+        plt.fill_between(time, X_t_mean_process - sample_sd, X_t_mean_process + sample_sd, facecolor='g', alpha=0.2)
+        plt.xlabel("time")
+        plt.ylabel("standard deviation")
+        plt.show()
+        
+    def calc_sd(self):
+        
+        N = 30
+        sample_collection = []
+        
+        for i in range(N):
+            time, X_t_process, X_t_mean_process = self.optimal_wealth()
+            
+            sample_collection.append(X_t_process)
+            
+        sample_collection = np.array(sample_collection)
+        
+        sample_sd = np.std(sample_collection, axis=0)
+        
+        return sample_sd
+    
         
     def log_process(self):
         
@@ -73,5 +111,6 @@ class optimal_wealth_process():
 
 optimal_wealth_process = optimal_wealth_process(X_0=1)
 
-#optimal_wealth_process.optimal_wealth()
-optimal_wealth_process.log_process()
+optimal_wealth_process.sample_plot()
+#optimal_wealth_process.sample_sd_plot()
+#optimal_wealth_process.log_process()

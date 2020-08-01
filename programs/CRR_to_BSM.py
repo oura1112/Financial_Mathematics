@@ -16,7 +16,7 @@ class CRR_to_BSM():
         self.init_S1 = 100
         self.K = 100
         self.T = 3
-        self.r = 0.01
+        self.r = 0.001
         self.sigma = 0.1
         
     # l and u under risk neutral
@@ -78,7 +78,7 @@ class CRR_to_BSM():
     # backward inductive equation
     def backward(self):
         
-        N_list = [i+1 for i in range(100)]
+        N_list = [i for i in range(300) if i%2==1]
         CRR_price_list = []
         BSM_price_list = [self.BSM_price_put()]*len(N_list)
         
@@ -109,8 +109,8 @@ class CRR_to_BSM():
             CRR_price_list.append(no_arbitrage)
         
         print(BSM_price_list[0])
-        plt.plot(N_list, CRR_price_list, label="CRR price", c='g')
-        plt.plot(N_list, BSM_price_list, label="BSM price", c='r')
+        plt.plot(N_list, CRR_price_list, label="CRR price")
+        plt.plot(N_list, BSM_price_list, label="BSM price")
         plt.legend(loc='upper right')
         plt.xlabel("N")
         plt.ylabel("price")
